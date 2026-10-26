@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NutriSync – Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF2EC;--card:#fff;--ink:#16221D;--mute:#5E6D66;--pandan:#1F5D4A;--p2:#DCEBE3;--kun:#F0B13A;--sam:#D6452F;--line:#DDE5DF;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1512;--card:#17211C;--ink:#E8F0EB;--mute:#93A59B;--pandan:#2E8A6C;--p2:#1E3329;--line:#26352D}}
+:root[data-theme="dark"]{--bg:#0E1512;--card:#17211C;--ink:#E8F0EB;--mute:#93A59B;--pandan:#2E8A6C;--p2:#1E3329;--line:#26352D}
+*{box-sizing:border-box;margin:0}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:500 15px/1.45 Figtree,system-ui,sans-serif;display:flex;justify-content:center;min-height:100vh}
+h1,h2,h3,.d{font-family:'Bricolage Grotesque',Figtree,sans-serif;letter-spacing:-.02em}
+.app{position:relative;width:100%;max-width:420px;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+@media(min-width:500px){body{padding:24px 0;align-items:center}.app{min-height:0;height:840px;border-radius:36px;border:1px solid var(--line);box-shadow:0 20px 60px rgba(20,40,30,.18)}}
+main{flex:1;overflow-y:auto}.tab{display:none;padding:0 16px 16px}.tab.on{display:block}
+.band{background:var(--pandan);color:#fff;margin:0 -16px 14px;padding:22px 20px 20px;border-radius:0 0 32px 32px}
+.band p{opacity:.8;font-size:13px}.big{font:800 46px/1 'Bricolage Grotesque';margin:6px 0 2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.score{width:86px;height:86px;border-radius:50%;background:var(--kun);color:#2B2000;display:grid;place-content:center;text-align:center;flex:none}
+.score b{font:800 30px/1 'Bricolage Grotesque'}.score small{font-size:10.5px;font-weight:600}
+h2{font-size:24px;font-weight:800;padding:20px 4px 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px}
+.card h3{font-size:16px;margin-bottom:8px}.m{color:var(--mute);font-size:12.5px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bar{height:9px;border-radius:9px;background:var(--p2);overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;border-radius:9px;transition:width .5s}
+.ai{background:var(--p2);border-color:var(--pandan)}.ai li{margin:0 0 6px 18px}
+.ai .tag{display:inline-block;background:var(--pandan);color:#fff;border-radius:8px;padding:2px 8px;font-size:12px;margin-bottom:8px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}.cols b{font:800 18px 'Bricolage Grotesque';display:block}
+.wk{display:flex;gap:6px;align-items:flex-end;height:110px;position:relative}.wk div{flex:1;text-align:center;font-size:11px;color:var(--mute)}.wk i{display:block;border-radius:8px 8px 3px 3px;background:var(--pandan);margin-bottom:4px}.wk i.l{background:var(--sam)}.wk i.h{background:var(--kun)}
+button,.chip{font:inherit;cursor:pointer}
+.btn{background:var(--pandan);color:#fff;border:0;border-radius:14px;padding:11px 16px;font-weight:600}.btn.k{background:var(--kun);color:#2B2000}.btn.o{background:none;border:1px solid var(--line);color:var(--ink)}
+:focus-visible{outline:3px solid var(--kun);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px}.chip.on{background:var(--p2);border-color:var(--pandan);color:var(--pandan);font-weight:600}
+.log{padding:0}.log li{list-style:none;display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line)}
+input[type=range]{width:100%;accent-color:var(--pandan)}
+.glass{display:flex;gap:6px}.glass button{flex:1;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:16px}.glass button.on{background:#CFE8F5;border-color:#6DB3D6}
+.food{display:flex;gap:12px}.food .e{flex:none;width:48px;height:48px;border-radius:14px;background:var(--p2);display:grid;place-content:center;font-size:24px}
+.pill{display:inline-block;border-radius:8px;background:var(--p2);color:var(--pandan);font-size:11.5px;padding:2px 7px;margin:4px 4px 0 0;font-weight:600}
+.price{font:800 15px 'Bricolage Grotesque'}
+.tip{background:#FFF3D6;color:#4A3500;border:0}
+.scan{height:150px;border-radius:16px;background:#0f1a15;position:relative;overflow:hidden;display:grid;place-content:center;font-size:56px;margin:8px 0}
+.scan:after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--kun);top:0;box-shadow:0 0 14px var(--kun);animation:sw 1.4s ease-in-out infinite}
+@keyframes sw{50%{top:100%}}@media(prefers-reduced-motion:reduce){.scan:after{animation:none;top:50%}}
+.chat{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}.msg{max-width:84%;padding:10px 13px;border-radius:18px}
+.me{align-self:flex-end;background:var(--pandan);color:#fff;border-bottom-right-radius:6px}.ahli{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px}
+.send{display:flex;gap:8px}.send input{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:11px 14px;font:inherit}
+nav{display:flex;border-top:1px solid var(--line);background:var(--card);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;border:0;color:var(--mute);padding:7px 0;border-radius:12px;font-size:11px;font-weight:600}nav button span{display:block;font-size:19px}nav button.on{color:var(--pandan);background:var(--p2)}
+#ob{position:absolute;inset:0;z-index:5;background:var(--pandan);color:#fff;padding:48px 24px 24px;display:flex;flex-direction:column;overflow-y:auto}
+#ob h1{font-size:32px;font-weight:800;margin:14px 0 6px}#ob .chip{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}#ob .chip.on{background:var(--kun);color:#2B2000;border-color:var(--kun)}
+#ob input{accent-color:var(--kun)}.dots{display:flex;gap:6px;margin-top:auto;padding-top:20px}.dots i{height:6px;flex:1;border-radius:6px;background:rgba(255,255,255,.3)}.dots i.on{background:var(--kun)}
+</style></head><body>
+<div class="app">
+<div id="ob"></div>
+<main>
+<section class="tab on" id="t-home">
+ <div class="band">
+  <div class="top"><div><p id="sapa"></p><div class="big" id="kc">0</div><p id="sisa"></p></div>
+  <div class="score"><div><b id="sk">0</b><br><small>skor kebiasaan</small></div></div></div>
+ </div>
+ <div class="card"><h3>Nutrisi hari ini</h3><div id="mac"></div></div>
+ <div class="card ai"><span class="tag">✦ Analisis AI</span><p id="aiTxt"></p><ul id="aiList" style="margin-top:8px"></ul></div>
+ <div class="card cols"><div><b id="tdr"></b><span class="m">tidur semalam</span></div><div><b id="wt"></b><span class="m">air minum</span></div><div><b id="rp"></b><span class="m">uang makan</span></div></div>
+</section>
+
+<section class="tab" id="t-catat"><h2>Catat harian</h2>
+ <div class="card"><div class="row"><h3 style="margin:0">Makanan</h3><button class="btn k" id="scanBtn">📷 Scan</button></div>
+  <div id="scanBox"></div><div class="chips" id="waktu"></div><div class="chips" id="quick"></div><ul class="log" id="log"></ul></div>
+ <div class="card"><div class="row"><h3 style="margin:0">Tidur</h3><strong class="d" id="slv"></strong></div>
+  <input type="range" id="sl" min="3" max="10" step="0.1" aria-label="Durasi tidur"><p class="m" id="slq"></p>
+  <button class="btn" style="margin-top:8px" id="svT">Simpan tidur</button></div>
+ <div class="card"><h3>Air minum</h3><div class="glass" id="glass"></div><p class="m" style="margin-top:6px">Ketuk gelas untuk menambah. Target 8 gelas.</p></div>
+ <div class="card"><h3>Target kalori</h3><div class="chips" id="target"></div><p class="m">Ubah sesuai rutinitas: hari kuliah padat, akhir pekan, atau masa ujian.</p></div>
+</section>
+
+<section class="tab" id="t-menu"><h2>Menu lokal hemat</h2>
+ <div class="card"><div class="row"><h3 style="margin:0">Anggaran per makan</h3><strong class="d" id="bv"></strong></div>
+  <input type="range" id="bud" min="5000" max="30000" step="1000" aria-label="Anggaran"><div class="chips" id="pref"></div>
+  <p class="m" id="rencana"></p></div>
+ <div id="menuList"></div>
+ <div class="card tip"><h3>♻ Kurangi sisa makanan</h3><p>Masak nasi secukupnya, simpan lauk di wadah tertutup maksimal 1 hari, dan olah sayur layu jadi tumisan atau sup besok. Beli bahan segar 2–3 hari sekali, bukan seminggu.</p></div>
+</section>
+
+<section class="tab" id="t-prog"><h2>Progres mingguan</h2>
+ <div class="card"><h3>Kalori vs target</h3><div class="wk" id="wkK"></div><p class="m" style="margin-top:6px">Kuning = melebihi target, merah = jauh di bawah.</p></div>
+ <div class="card"><h3>Jam tidur</h3><div class="wk" id="wkS"></div><p class="m" style="margin-top:6px">Merah = kurang dari 6 jam.</p></div>
+ <div class="card cols"><div><b id="avS"></b><span class="m">rata-rata tidur</span></div><div><b id="stk">4 hari</b><span class="m">streak catat</span></div><div><b id="hem"></b><span class="m">hemat vs anggaran</span></div></div>
+ <div class="card ai"><span class="tag">✦ Ringkasan AI minggu ini</span><p id="aiW"></p></div>
+ <div class="card"><h3>Pencapaian</h3><div class="chips"><span class="pill">🔥 Streak 4 hari</span><span class="pill">🥬 Sayur 5 dari 7 hari</span><span class="pill">♻ 3 porsi sisa terselamatkan</span></div></div>
+</section>
+
+<section class="tab" id="t-chat"><h2>Konsultasi gizi</h2>
+ <div class="card"><div class="food"><div class="e">🥗</div><div><strong>Ahli gizi bersertifikat</strong><p class="m">Contoh percakapan untuk prototype. Balasan adalah simulasi, bukan saran medis.</p></div></div></div>
+ <div class="chat" id="chat"></div><div class="chips" id="sugg"></div>
+ <form class="send" id="form"><input id="msg" placeholder="Tulis pertanyaan…" aria-label="Pesan"><button class="btn" type="submit">Kirim</button></form>
+</section>
+</main>
+<nav id="nav">
+ <button class="on" data-t="home"><span>◔</span>Beranda</button><button data-t="catat"><span>✎</span>Catat</button><button data-t="menu"><span>🍲</span>Menu</button><button data-t="prog"><span>📈</span>Progres</button><button data-t="chat"><span>💬</span>Ahli</button>
+</nav></div>
+<script>
+const $=s=>document.querySelector(s),rp=n=>'Rp'+Math.round(n).toLocaleString('id-ID'),id=n=>Math.round(n).toLocaleString('id-ID');
+const F=[['Nasi uduk + telur',520,70,16,20,10000,'🍚','Nasi gurih, telur, bawang goreng',['Tinggi protein'],'Nasi sisa bisa jadi nasi goreng besok.'],
+['Bubur ayam',350,52,14,9,12000,'🥣','Bubur hangat, suwiran ayam',[],'Habiskan di tempat, bubur cepat basi.'],
+['Pecel tempe + nasi merah',480,62,18,16,12000,'🥜','Tempe lokal, sayur rebus, bumbu kacang',['Vegetarian','Tinggi protein'],'Sayur rebus tahan 1 hari di kulkas.'],
+['Soto ayam bening',420,38,28,14,15000,'🍲','Kuah ringan, dada ayam, soun',['Tinggi protein'],'Kuah bisa dipanaskan ulang sekali saja.'],
+['Pepes ikan + sayur asem',390,30,30,15,18000,'🐟','Ikan kukus daun pisang, rendah minyak',['Tinggi protein'],'Tulang ikan bisa dibuat kaldu.'],
+['Tahu-tempe bacem + lalapan',360,34,22,14,9000,'🌿','Lauk nabati murah, serat lalapan',['Vegetarian','Tinggi protein'],'Bacem awet 2 hari di kulkas.'],
+['Gado-gado',450,48,18,20,13000,'🥗','Sayur, tahu, telur, lontong',['Vegetarian'],'Pisahkan bumbu agar sayur tidak layu.'],
+['Bubur kacang hijau',250,44,9,5,7000,'🫘','Camilan hangat, cocok sebelum tidur',['Vegetarian'],'Porsi kecil, jangan disimpan semalam.']];
+const S={ob:0,goal:'Lebih teratur',budget:15000,sleepT:7,kT:2000,pref:'Semua',waktu:'Sarapan',log:[],water:3,sleep:5.7,wk:[1850,2300,1700,2150,1950,2050],ws:[7.2,6.5,5.4,7,6.1,8],sc:0};
+const T={k:250,p:75,l:65};
+function chips(el,l,cur,fn,dark){el.innerHTML='';l.forEach(x=>{const b=document.createElement('button');b.className='chip'+(x===cur?' on':'');b.textContent=x;b.onclick=()=>fn(x);el.append(b)})}
+function jam(h){const m=Math.round(h*60);return Math.floor(m/60)+'j '+String(m%60).padStart(2,'0')+'m'}
+const sum=i=>S.log.reduce((a,l)=>a+F[l.i][i],0);
+function ob(){const o=$('#ob');if(S.ob>2){o.style.display='none';return}
+ const dots='<div class="dots">'+[0,1,2].map(i=>'<i class="'+(i<=S.ob?'on':'')+'"></i>').join('')+'</div>';
+ const hd=['Apa tujuanmu?','Anggaran & preferensi','Jam tidur idealmu'][S.ob],sub=['Kami sesuaikan saran dan target dengan rutinitasmu.','Rekomendasi menu mengikuti isi dompetmu.','Atur target yang realistis untuk jadwal padatmu.'][S.ob];
+ o.innerHTML='<div class="d" style="font-size:20px;font-weight:800">NutriSync</div><h1>'+hd+'</h1><p style="opacity:.85">'+sub+'</p><div class="chips" id="o1" style="margin-top:18px"></div><div id="o2"></div><button class="btn k" id="nx" style="margin-top:20px">'+(S.ob<2?'Lanjut':'Mulai')+'</button>'+dots;
+ if(S.ob==0)chips($('#o1'),['Lebih teratur','Turunkan berat badan','Tambah energi','Hemat uang makan'],S.goal,x=>{S.goal=x;ob()});
+ if(S.ob==1){chips($('#o1'),['Semua','Vegetarian','Tinggi protein'],S.pref,x=>{S.pref=x;ob()});$('#o2').innerHTML='<p style="margin-top:14px">Anggaran per makan: <b id="ov">'+rp(S.budget)+'</b></p><input type="range" id="ob2" min="5000" max="30000" step="1000" value="'+S.budget+'" style="width:100%">';$('#ob2').oninput=e=>{S.budget=+e.target.value;$('#ov').textContent=rp(S.budget)}}
+ if(S.ob==2){$('#o2').innerHTML='<p>Target tidur: <b id="ov">'+S.sleepT+' jam</b></p><input type="range" id="ob2" min="5" max="9" step="0.5" value="'+S.sleepT+'" style="width:100%">';$('#ob2').oninput=e=>{S.sleepT=+e.target.value;$('#ov').textContent=S.sleepT+' jam'}}
+ $('#nx').onclick=()=>{S.ob++;ob();render()}}
+function render(){
+ const k=sum(1),p=sum(3),ka=sum(2),l=sum(4),spent=S.log.reduce((a,x)=>a+F[x.i][5],0);
+ $('#sapa').textContent='Senin, 5 Oktober · tujuan: '+S.goal.toLowerCase();
+ $('#kc').textContent=id(k);$('#sisa').textContent=k>=S.kT?'Target kalori tercapai':'sisa '+id(S.kT-k)+' dari '+id(S.kT)+' kkal';
+ const skor=Math.round(Math.min(S.sleep/S.sleepT,1)*40+(1-Math.min(Math.abs(k-S.kT)/S.kT,1))*30+S.water/8*15+(S.log.some(x=>x.w==='Sarapan')?15:0));$('#sk').textContent=skor;
+ $('#mac').innerHTML=[['Karbohidrat',ka,T.k,'var(--pandan)','g'],['Protein',p,T.p,'var(--kun)','g'],['Lemak',l,T.l,'var(--sam)','g']].map(m=>'<div class="row"><span>'+m[0]+'</span><span class="m">'+m[1]+' / '+m[2]+' '+m[4]+'</span></div><div class="bar"><i style="width:'+Math.min(100,m[1]/m[2]*100)+'%;background:'+m[3]+'"></i></div>').join('');
+ const kur=S.sleep<S.sleepT-0.5,tips=[];
+ if(kur)tips.push('Tidur kurang '+jam(S.sleepT-S.sleep)+' dari targetmu. Hindari kafein setelah jam 3 sore dan tidur 30 menit lebih awal.');
+ if(!S.log.some(x=>x.w==='Sarapan'))tips.push('Belum ada sarapan. Pecel tempe atau bubur ayam cepat dan murah.');
+ if(p<T.p*.5&&S.log.length)tips.push('Protein baru '+p+' g dari '+T.p+' g. Tambah tempe, telur, atau ikan di makan berikutnya.');
+ if(S.water<5)tips.push('Air baru '+S.water+' gelas. Bawa botol minum ke kampus atau kantor.');
+ if(!tips.length)tips.push('Pola hari ini sudah baik. Pertahankan!');
+ $('#aiTxt').textContent=kur?'Kurang tidur cenderung bikin nafsu makan naik dan fokus turun. Kami fokuskan saran ke pola istirahat dulu.':'Tidur dan makanmu cukup seimbang hari ini.';$('#aiList').innerHTML=tips.map(t=>'<li>'+t+'</li>').join('');
+ $('#tdr').textContent=jam(S.sleep);$('#wt').textContent=S.water+'/8';$('#rp').textContent=rp(spent);
+ $('#waktu').innerHTML='';chips($('#waktu'),['Sarapan','Makan siang','Makan malam','Camilan'],S.waktu,x=>{S.waktu=x;render()});
+ chips($('#quick'),F.map(f=>f[0]),null,n=>add(F.findIndex(f=>f[0]===n)));
+ $('#log').innerHTML=S.log.length?S.log.map(x=>'<li><span>'+x.w+': '+F[x.i][0]+'</span><b>'+F[x.i][1]+' kkal</b></li>').join(''):'<li class="m">Belum ada catatan. Ketuk makanan atau pakai Scan.</li>';
+ $('#slv').textContent=S.sleep.toFixed(1).replace('.',',')+' jam';$('#slq').textContent=S.sleep>=S.sleepT?'Kualitas cukup, sesuai target.':'Kurang '+jam(S.sleepT-S.sleep)+' dari target '+S.sleepT+' jam.';
+ $('#glass').innerHTML=Array.from({length:8},(_,i)=>'<button class="'+(i<S.water?'on':'')+'" aria-label="Gelas '+(i+1)+'" data-i="'+i+'">💧</button>').join('');
+ chips($('#target'),['1.800 kkal','2.000 kkal','2.200 kkal'],id(S.kT)+' kkal',x=>{S.kT=parseInt(x.replace('.',''));render()});
+ chips($('#pref'),['Semua','Vegetarian','Tinggi protein'],S.pref,x=>{S.pref=x;render()});
+ $('#bud').value=S.budget;$('#bv').textContent=rp(S.budget);$('#rencana').textContent='Anggaran makan sehari (3×): '+rp(S.budget*3);
+ const ls=F.map((f,i)=>[f,i]).filter(([f])=>f[5]<=S.budget&&(S.pref==='Semua'||f[8].includes(S.pref)));
+ $('#menuList').innerHTML=ls.length?ls.map(([f,i])=>'<div class="card food"><div class="e">'+f[6]+'</div><div style="flex:1"><div class="row"><strong>'+f[0]+'</strong><span class="price">'+rp(f[5])+'</span></div><p class="m">'+f[7]+'</p><span class="pill">'+f[1]+' kkal</span><span class="pill">P '+f[3]+'g</span><span class="pill">K '+f[2]+'g</span><span class="pill">L '+f[4]+'g</span><p class="m" style="margin-top:6px">♻ '+f[9]+'</p><button class="btn o" style="margin-top:8px;padding:6px 12px" data-m="'+i+'">+ Catat</button></div></div>').join(''):'<div class="card">Belum ada menu di anggaran ini. Naikkan anggaran atau ganti preferensi.</div>';
+ const wk=[...S.wk,k];$('#wkK').innerHTML=wk.map((v,i)=>'<div><i class="'+(v>S.kT*1.05?'h':v<S.kT*.75?'l':'')+'" style="height:'+Math.max(4,v/S.kT*70)+'px"></i>'+['Sen','Sel','Rab','Kam','Jum','Sab','Min'][i]+'</div>').join('');
+ const ws=[...S.ws,S.sleep];$('#wkS').innerHTML=ws.map((v,i)=>'<div><i class="'+(v<6?'l':'')+'" style="height:'+v*10+'px"></i>'+['Sen','Sel','Rab','Kam','Jum','Sab','Min'][i]+'</div>').join('');
+ const av=ws.reduce((a,b)=>a+b)/7;$('#avS').textContent=jam(av);$('#hem').textContent=rp(Math.max(0,S.budget*3*7-spent-S.budget*3*6*.9));
+ $('#aiW').textContent='Rata-rata tidurmu '+jam(av)+', '+(av<S.sleepT?'masih di bawah target '+S.sleepT+' jam. Hari dengan tidur di bawah 6 jam cenderung diikuti kalori berlebih keesokan harinya.':'sudah sesuai target.')+' Saran: kunci jam tidur yang sama di hari kerja, dan siapkan menu 2 hari sekaligus untuk hemat waktu dan mengurangi sisa makanan.';
+}
+function add(i,w){S.log.unshift({i,w:w||S.waktu});render()}
+$('#glass').onclick=e=>{const b=e.target.closest('button');if(b){S.water=+b.dataset.i+1===S.water?S.water-1:+b.dataset.i+1;render()}};
+$('#menuList').onclick=e=>{const b=e.target.closest('button');if(b){add(+b.dataset.m);b.textContent='Tercatat ✓'}};
+$('#sl').value=S.sleep;$('#sl').oninput=e=>{S.sleep=+e.target.value;render()};
+$('#svT').onclick=()=>{$('#svT').textContent='Tersimpan ✓';setTimeout(()=>$('#svT').textContent='Simpan tidur',1400)};
+$('#bud').oninput=e=>{S.budget=+e.target.value;render()};
+let sc=0;$('#scanBtn').onclick=()=>{const i=[2,6,3,0][sc++%4],f=F[i];$('#scanBox').innerHTML='<div class="scan">'+f[6]+'</div><p class="m">Menganalisis foto…</p>';
+ setTimeout(()=>{$('#scanBox').innerHTML='<div class="card" style="background:var(--p2);border-color:var(--pandan)"><strong>'+f[0]+'</strong> <span class="m">(±1 porsi, cocok 9'+(1+sc%8)+'%)</span><p class="m">'+f[1]+' kkal · P '+f[3]+'g · K '+f[2]+'g · L '+f[4]+'g</p><div class="row" style="margin-top:8px"><button class="btn" id="okS">Tambah ke '+S.waktu.toLowerCase()+'</button><button class="btn o" id="noS">Batal</button></div></div>';
+  $('#okS').onclick=()=>{$('#scanBox').innerHTML='';add(i)};$('#noS').onclick=()=>$('#scanBox').innerHTML=''},1500)};
+$('#nav').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.t));$('main').scrollTop=0};
+const R=[[/tidur|ngantuk|lelah|capek/,'Coba tidur di jam yang sama tiap malam dan jauhi layar 30 menit sebelumnya. Makan malam jangan terlalu berat, bubur kacang hijau porsi kecil boleh.'],[/murah|hemat|budget|anggaran|uang/,'Tempe, tahu, telur, dan sayur musiman adalah sumber gizi paling hemat. Cek tab Menu, semua sudah difilter sesuai anggaranmu.'],[/diet|turun|berat/,'Fokus ke porsi dan jam makan teratur dulu, jangan skip sarapan. Defisit besar justru bikin lemas, jadi kita turunkan bertahap.'],[/sarapan/,'Sarapan cepat: nasi merah + telur + sayur, atau pisang + tempe goreng. Siapkan malam sebelumnya kalau pagi sering buru-buru.'],[/sisa|buang/,'Masak secukupnya, simpan lauk di wadah tertutup maksimal 1 hari, dan ubah sayur layu jadi tumisan atau sup.']];
+function bub(t,c){const d=document.createElement('div');d.className='msg '+c;d.textContent=t;$('#chat').append(d);d.scrollIntoView({block:'nearest'})}
+function kirim(t){if(!t.trim())return;bub(t,'me');const r=R.find(b=>b[0].test(t.toLowerCase()));setTimeout(()=>bub(r?r[1]:'Terima kasih sudah bertanya. Ceritakan rutinitas makan dan tidurmu, nanti saya bantu susun kebiasaan yang realistis.','ahli'),700)}
+bub('Halo! Tidurmu semalam sekitar 5j 40m. Ada yang mau ditanyakan soal pola makan atau istirahat?','ahli');
+chips($('#sugg'),['Cara hemat tapi bergizi','Sering ngantuk siang','Ide sarapan cepat','Cara kurangi sisa makanan'],null,kirim);
+$('#form').onsubmit=e=>{e.preventDefault();kirim($('#msg').value);$('#msg').value=''};
+ob();render();
+</script></body></html>
